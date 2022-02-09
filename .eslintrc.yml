@@ -1,3 +1,4 @@
+root: true
 env:
   browser: true
   es2021: true
@@ -5,15 +6,18 @@ extends:
   - plugin:react/recommended
   - airbnb
   - prettier
+  - airbnb-typescript
 parser: "@typescript-eslint/parser"
 parserOptions:
   ecmaFeatures:
     jsx: true
   ecmaVersion: latest
   sourceType: module
+  project: ./tsconfig.json
 plugins:
   - react
   - "@typescript-eslint"
+  - prettier
 rules:
   react/react-in-jsx-scope: off
   react/jsx-filename-extension:
@@ -24,8 +28,22 @@ rules:
         - .tsx
         - .ts
   no-shadow:
-    - error
+    - 2
     - hoist: functions
   import/no-extraneous-dependencies:
-    - error
+    - 2
     - devDependencies: true
+  import/extensions:
+    - 2
+    - ignorePackages
+    - js: never
+      jsx: never
+      ts: never
+      tsx: never
+  prettier/prettier:
+    - 2
+  "@typescript-eslint/quotes":
+    - 2
+    - double
+    - avoidEscape: true
+      allowTemplateLiterals: true

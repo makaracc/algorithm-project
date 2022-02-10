@@ -50,3 +50,5 @@ rules:
       allowTemplateLiterals: true
   "@typescript-eslint/no-unused-vars":
     - 1
+  react/self-closing-comp:
+    - 1

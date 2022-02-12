@@ -9,40 +9,81 @@ interface Props {
 
 type BoxType = "start" | "wall" | "end";
 
-interface BoxOfGrid {
-  // [index: number]: {
+type BoxOfGrid = {
   key: string;
   element: JSX.Element;
-  // };
-}
+};
+
+type Coordinate = {
+  x: number;
+  y: number;
+};
+
+// layout for coordinate
+// [[{0,0},{0,1},{0,2},{0,3}],
+// [{1,0},{1,1},{1,2},{1,3}],
+// [{2,0},{2,1},{2,2},{2,3}],]
 
 export const BoxGrid: React.FC<Props> = (props) => {
-  const rows: BoxOfGrid[] = [];
-  const columns = [];
-  // const gridOfBoxes: any[] = [];
   const gridOfBoxes: Array<BoxOfGrid>[] = [[]];
-  const [start, setStart] = React.useState({});
-  const [wall, setWall] = React.useState({});
-  const [goal, setGoal] = React.useState({});
+  const [start, setStart] = React.useState<Coordinate>({ x: 0, y: 0 });
+  const [walls, setWalls] = React.useState<Coordinate[]>([]);
+  const [goal, setGoal] = React.useState<Coordinate>({
+    x: props.row - 1,
+    y: props.column - 1,
+  });
 
   const handleBoxClick = () => {
     console.log("box clicked");
   };
 
-  // for (let i = 0; i < props.row; i++) {
-  //   gridOfBoxes[i] = [];
-  //   for (let j = 0; j < props.column; j++) {
-  //     const val = { key: `${i}${j}`, element: <SmallBox /> } as BoxOfGrid;
-  //     gridOfBoxes[i].push(val);
-  //   }
-  // }
+  const checkForWall = (x: number, y: number) =>
+    walls.some((wall) => wall.x === x && wall.y === y);
+
+  const assignBoxType = (coordinate: Coordinate) => {
+    let boxToReturn = <SmallBox boxType="empty" />;
+    if (coordinate.x === start.x && coordinate.y === start.y) {
+      boxToReturn = <SmallBox boxType="start" />;
+      console.log("start", coordinate);
+    } else if (coordinate.x === goal.x && coordinate.y === goal.y) {
+      boxToReturn = <SmallBox boxType="goal" />;
+      console.log("goal", coordinate);
+    } else if (checkForWall(coordinate.x, coordinate.y)) {
+      boxToReturn = <SmallBox boxType="wall" />;
+      console.log("wall", coordinate);
+    }
+    return boxToReturn;
+  };
+
   for (let i = 0; i < props.row; i++) {
     gridOfBoxes[i] = [];
     for (let j = 0; j < props.column; j++) {
-      const val = { key: `${i}${j}`, element: <SmallBox /> } as BoxOfGrid;
+      const val = {
+        key: `${i}${j}`,
+        element: assignBoxType({ x: i, y: j }),
+      } as BoxOfGrid;
       gridOfBoxes[i][j] = val;
     }
   }
+
+  const findIndex = (grid: BoxOfGrid[][], element: BoxOfGrid) => {
+    const notFound = [-1, -1];
+    if (grid.length === 0) {
+      return notFound;
+    }
+    for (let i = 0; i < grid.length; i++) {
+      for (let j = 0; j < grid[i].length; j++) {
+        if (grid[i][j].key === element.key) {
+          return [i, j];
+        }
+      }
+    }
+    return notFound;
+  };
+
+  const test = gridOfBoxes[0][9];
+
+  console.log(findIndex(gridOfBoxes, test));
 
   const component = (
     <Grid container direction="column">

@@ -2,12 +2,11 @@ import React, { useEffect } from "react";
 import { Box, Button } from "@mui/material";
 // import { styled } from "@mui/system";
 
-type BoxType = "start" | "wall" | "end" | "empty";
+type BoxType = "start" | "wall" | "goal" | "empty";
 
 interface Props {
   boxType?: BoxType;
   onBoxClick?: (boxType?: BoxType) => void;
-  setBoxType?: (boxType?: BoxType) => void;
 }
 
 export const SmallBox: React.FC<Props> = (props) => {
@@ -21,7 +20,7 @@ export const SmallBox: React.FC<Props> = (props) => {
       color = "#0cb2c0";
     } else if (boxType === "wall") {
       color = "#565656";
-    } else if (boxType === "end") {
+    } else if (boxType === "goal") {
       color = "#f24484";
     } else {
       color = "#ddd";

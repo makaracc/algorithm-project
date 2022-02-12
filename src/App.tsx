@@ -18,7 +18,7 @@ function App() {
           height: "100vh",
         }}
       >
-        <BoxGrid row={50} column={10} />
+        <BoxGrid row={10} column={10} />
       </Box>
     </div>
   );

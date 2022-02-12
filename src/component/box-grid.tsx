@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useMemo, useEffect } from "react";
 import { Box, Grid } from "@mui/material";
 import { SmallBox } from "./small-box";
 
@@ -7,7 +7,7 @@ interface Props {
   column: number;
 }
 
-type BoxType = "start" | "wall" | "end";
+type BoxType = "start" | "wall" | "goal" | "empty";
 
 type BoxOfGrid = {
   key: string;
@@ -25,7 +25,9 @@ type Coordinate = {
 // [{2,0},{2,1},{2,2},{2,3}],]
 
 export const BoxGrid: React.FC<Props> = (props) => {
-  const gridOfBoxes: Array<BoxOfGrid>[] = [[]];
+  const [gridOfBoxes, setGridOfBoxes] = React.useState<Array<BoxOfGrid>[]>([
+    [],
+  ]);
   const [start, setStart] = React.useState<Coordinate>({ x: 0, y: 0 });
   const [walls, setWalls] = React.useState<Coordinate[]>([]);
   const [goal, setGoal] = React.useState<Coordinate>({
@@ -33,38 +35,69 @@ export const BoxGrid: React.FC<Props> = (props) => {
     y: props.column - 1,
   });
 
-  const handleBoxClick = () => {
-    console.log("box clicked");
-  };
+  // useEffect(() => {
+  //   initGrid();
+  // }, [start, walls, goal]);
 
   const checkForWall = (x: number, y: number) =>
     walls.some((wall) => wall.x === x && wall.y === y);
 
-  const assignBoxType = (coordinate: Coordinate) => {
-    let boxToReturn = <SmallBox boxType="empty" />;
-    if (coordinate.x === start.x && coordinate.y === start.y) {
-      boxToReturn = <SmallBox boxType="start" />;
-      console.log("start", coordinate);
-    } else if (coordinate.x === goal.x && coordinate.y === goal.y) {
-      boxToReturn = <SmallBox boxType="goal" />;
-      console.log("goal", coordinate);
-    } else if (checkForWall(coordinate.x, coordinate.y)) {
-      boxToReturn = <SmallBox boxType="wall" />;
-      console.log("wall", coordinate);
-    }
-    return boxToReturn;
+  //  const changeStart = (coordinate: Coordinate) => {
+  //   gridOfBoxes[start.x][start.y].element = assignBoxType(start);
+  //   setStart(coordinate);
+  // };
+
+  const handleBoxClick = (coordinate: Coordinate) => {
+    setStart(coordinate);
+    if (coordinate.x === start.x && coordinate.y === start.y) return;
+    console.log("parent click?");
+    gridOfBoxes[start.x][start.y].element = assignBoxType(start, "empty");
+    gridOfBoxes[coordinate.x][coordinate.y].element = assignBoxType(coordinate);
   };
 
-  for (let i = 0; i < props.row; i++) {
-    gridOfBoxes[i] = [];
-    for (let j = 0; j < props.column; j++) {
-      const val = {
-        key: `${i}${j}`,
-        element: assignBoxType({ x: i, y: j }),
-      } as BoxOfGrid;
-      gridOfBoxes[i][j] = val;
+  const assignBoxType = (
+    coordinate: Coordinate,
+    boxType?: BoxType,
+    wall?: boolean,
+  ) => {
+    if (boxType) {
+      return <SmallBox boxType={boxType} coordinate={coordinate} />;
     }
-  }
+    let boxToReturn: BoxType = "empty";
+    if (coordinate.x === start.x && coordinate.y === start.y) {
+      boxToReturn = "start";
+    } else if (coordinate.x === goal.x && coordinate.y === goal.y) {
+      boxToReturn = "goal";
+    } else if (wall) {
+      if (checkForWall(coordinate.x, coordinate.y)) {
+        boxToReturn = "wall";
+      }
+    }
+    console.log("howmany?");
+    return (
+      <SmallBox
+        boxType={boxToReturn}
+        onBoxClick={handleBoxClick}
+        coordinate={coordinate}
+      />
+    );
+  };
+
+  const initGrid = () => {
+    console.log("render memo gridinit");
+    for (let i = 0; i < props.row; i++) {
+      gridOfBoxes[i] = [];
+      for (let j = 0; j < props.column; j++) {
+        const val = {
+          key: `${i}${j}`,
+          element: assignBoxType({ x: i, y: j }),
+        } as BoxOfGrid;
+        gridOfBoxes[i][j] = val;
+      }
+    }
+  };
+
+  initGrid();
 
   const findIndex = (grid: BoxOfGrid[][], element: BoxOfGrid) => {
     const notFound = [-1, -1];
@@ -83,7 +116,9 @@ export const BoxGrid: React.FC<Props> = (props) => {
 
   const test = gridOfBoxes[0][9];
 
-  console.log(findIndex(gridOfBoxes, test));
+  const changeGoal = (coordinate: Coordinate) => {
+    setStart(coordinate);
+  };
 
   const component = (
     <Grid container direction="column">

@@ -1,20 +1,27 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { Box, Button } from "@mui/material";
 // import { styled } from "@mui/system";
 
 type BoxType = "start" | "wall" | "goal" | "empty";
 
+type Coordinate = {
+  x: number;
+  y: number;
+};
 interface Props {
   boxType?: BoxType;
-  onBoxClick?: (boxType?: BoxType) => void;
+  onBoxClick?: (coordinate: Coordinate) => void;
+  coordinate: Coordinate;
 }
 
 export const SmallBox: React.FC<Props> = (props) => {
   const [boxType, setBoxType] = React.useState(
     props.boxType ? props.boxType : "empty",
   );
+  const [coordinate, setCoordinate] = React.useState(props.coordinate);
   const [boxColor, setBoxColor] = React.useState("#ddd");
   const setBoxTypeColor = () => {
+    console.log("render setcolor");
     let color = "";
     if (boxType === "start") {
       color = "#0cb2c0";
@@ -27,14 +34,14 @@ export const SmallBox: React.FC<Props> = (props) => {
     }
     setBoxColor(color);
   };
+  useEffect(() => {
+    setBoxTypeColor();
+  }, [boxType]);
 
   const handleBoxClick = () => {
     setBoxType("start");
+    props.onBoxClick && props.onBoxClick(coordinate);
   };
-
-  useEffect(() => {
-    setBoxTypeColor();
-  }, [boxType, boxColor]);
 
   const component = (
     <Button

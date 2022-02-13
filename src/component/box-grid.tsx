@@ -37,9 +37,9 @@ export const BoxGrid: React.FC<Props> = (props) => {
     y: props.column - 1,
   });
 
-  // useEffect(() => {
-  //   initGrid();
-  // }, [start, walls, goal]);
+  useEffect(() => {
+    initGrid();
+  }, [gridOfBoxes]);
 
   const checkForWall = (x: number, y: number) =>
     walls.some((wall) => wall.x === x && wall.y === y);

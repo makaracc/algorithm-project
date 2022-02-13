@@ -24,6 +24,8 @@ type Coordinate = {
 // [{1,0},{1,1},{1,2},{1,3}],
 // [{2,0},{2,1},{2,2},{2,3}],]
 
+// TODO: performance
+
 export const BoxGrid: React.FC<Props> = (props) => {
   const [gridOfBoxes, setGridOfBoxes] = React.useState<Array<BoxOfGrid>[]>([
     [],

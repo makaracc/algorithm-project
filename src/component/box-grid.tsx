@@ -75,7 +75,7 @@ export const BoxGrid: React.FC<Props> = (props) => {
         boxToReturn = "wall";
       }
     }
-    console.log("howmany?");
+    console.log("how many?");
     return (
       <SmallBox
         boxType={boxToReturn}

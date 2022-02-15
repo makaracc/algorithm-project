@@ -52,7 +52,6 @@ export const BoxGrid: React.FC<Props> = (props) => {
   const handleBoxClick = (coordinate: Coordinate) => {
     setStart(coordinate);
     if (coordinate.x === start.x && coordinate.y === start.y) return;
-    console.log("parent click?");
     gridOfBoxes[start.x][start.y].element = assignBoxType(start, "empty");
     gridOfBoxes[coordinate.x][coordinate.y].element = assignBoxType(coordinate);
   };
@@ -75,7 +74,6 @@ export const BoxGrid: React.FC<Props> = (props) => {
         boxToReturn = "wall";
       }
     }
-    console.log("how many?");
     return (
       <SmallBox
         boxType={boxToReturn}
@@ -86,7 +84,6 @@ export const BoxGrid: React.FC<Props> = (props) => {
   };
 
   const initGrid = () => {
-    console.log("render memo gridinit");
     for (let i = 0; i < props.row; i++) {
       gridOfBoxes[i] = [];
       for (let j = 0; j < props.column; j++) {

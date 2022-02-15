@@ -22,7 +22,6 @@ export const SmallBox: React.FC<Props> = (props) => {
   const [coordinate, setCoordinate] = React.useState(props.coordinate);
   const [boxColor, setBoxColor] = React.useState("#ddd");
   const setBoxTypeColor = () => {
-    console.log("render setcolor");
     let color = "";
     if (boxType === "start") {
       color = "#0cb2c0";

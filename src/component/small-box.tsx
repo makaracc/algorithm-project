@@ -8,6 +8,7 @@ type Coordinate = {
   x: number;
   y: number;
 };
+
 interface Props {
   boxType?: BoxType;
   onBoxClick?: (coordinate: Coordinate) => void;
@@ -34,6 +35,7 @@ export const SmallBox: React.FC<Props> = (props) => {
     }
     setBoxColor(color);
   };
+
   useEffect(() => {
     setBoxTypeColor();
   }, [boxType]);
